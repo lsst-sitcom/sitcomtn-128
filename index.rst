@@ -4,18 +4,16 @@ Unrecognized Blends in Operations Rehearsal 3
 
 .. abstract::
    Unrecognized blends are a class of blended objects that are mistakenly identified as a single object.
-
-       * We can identify such blends using higher resolution imaging from a space based telescope that will not be affected by seeing or using a truth catalog in the case of Operations Rehearsal 3.
-       * We implement a simple matching algorithm using the RA and DEC of objects to label observed objects as isolated objects, recognized blends, or unrecognized blends.
-       * We want to use commissioning to investigate the fraction of unrecognized blends and how different variables influence blends
-       * We've created the pipeline to do that. Once space based data of the same region is processed in the pipeline we are good to go
-       * Created with both object and source table in mind so will work on coadds as well (once we have those)
+   We can identify such objects using higher resolution imaging from a space based telescope that is not affected by ground based seeing or in the Operations Rehearsal 3, use the simulation truth catalog.
+   Using RA and DEC we can match between the two catalogs to label observed objects as isolated objects, recognized blends, or unrecognized blends.
+   This allows us to investigate the fraction of unrecognied blends present and how different factors influence that rate.
+   We have performed a variety of tests into unrecognized blends on the simulated data which can act as a benchmark for upcoming commissioning where we will have to use a space based catalog to match.
 ..   Using a space based catalog we can attempt to match objects between the two and identify any unrecognized blends. In this technote we use the truth catalogs as a proxy and create a simple matching algorithm between truth and observation to label recognized and unrecognized blends. We then investigate how the rate of unrecognized blends varies with object properties such as i-mag and local density.
 
 
 Data
 ===============
-   * Introduce Operations Rehearsal 3 with 3 nights of simulation
+..   * Introduce Operations Rehearsal 3 with 3 nights of simulation
    * We are using the "Intermittent Cumulative DRP" catalog
 
         * Also reference a nightly catalog/collection
@@ -48,7 +46,7 @@ The simulated images are built on top of a set of DC2 patches with input catalog
 
 Matching
 ========
-   * We have to match between the space (truth) and ground catalogs to label unrecognized blends
+..   * We have to match between the space (truth) and ground catalogs to label unrecognized blends
 
         * Maybe include the nice egg recognized/unrecognized graphic? 
 
@@ -105,8 +103,6 @@ It is important to note that this is not the only option to match for unrecogniz
 One benefit to our naive matching scheme is that it allows us to use KDtrees which are fast and efficient.
 
 
-.. note::
-   I removed a section on Recognized Blends that motivates the use for 1 arcsecond matching but not super rigorously.
 
 .. 
         Recognized Blends
