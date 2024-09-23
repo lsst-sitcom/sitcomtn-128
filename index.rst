@@ -32,9 +32,10 @@ The third Operations Rehearsal (OR3) simulated 3 nights of observation that were
 The simulations are built on top of a set of DC2 patches which were then processed to mimic realistic observational conditions.
 We use both the nightly catalog and the cumulative co-add catalog.
 The catalog can be accessed using the :code:`/repo/embargo` repo and found in the :code:`LSSTComCamSim/runs/intermittentcumulativeDRP/20240402_03_04/d_2024_03_29/DM-43865` collection.
-The observed catalog goes through a detection and deblending step already to deal with ``recognized blends.``
-In the science pipeline, the process of deblending produces children objects from a given parent object.
-In order to remove duplicates from the catalog we work only with the deblended children and not parents along with two other quality control flags (not a sky object and in the inner region).
+
+The observed catalog goes through a detection and deblending step which can deal with ``recognized blends.``
+In the science pipeline, the process of deblending produces children objects from a given parent object with both existing in the catalog.
+In order to remove duplicates from the catalog we work only with the deblended children and not parents along with two other quality control flags --- one to ensure that an object is not a sky object and another to ensure that the object is in the inner part of an image.
 All three flags are combined into the :code:`detect_isPrimary` flag which we apply to the observed catalog.
 In the observed catalog, a loose proxy for star-galaxy classification can be done via the :code:`extendedness` flag.
 In this technote we will use "observed galaxy" and "extended object" interchangibly.
