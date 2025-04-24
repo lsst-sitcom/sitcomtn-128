@@ -1,15 +1,14 @@
 #############################################
-Unrecognized Blends in Operations Rehearsal 3
+Unrecognized Blends in ComCam ECDFS
 #############################################
 
 .. abstract::
    Unrecognized blends are a class of blended objects that are mistakenly identified as a single object.
-   We can identify such objects using higher resolution imaging from a space based telescope that is not affected by ground based seeing or in the Operations Rehearsal 3, use the simulation truth catalog.
-   Using RA and DEC we can match between the two catalogs to label observed objects as isolated objects, recognized blends, or unrecognized blends.
-   This allows us to investigate the fraction of unrecognied blends present and how different factors influence that rate.
-   We have performed a variety of tests into unrecognized blends on the simulated data which can act as a benchmark for upcoming commissioning where we will have to use a space based catalog to match.
-..   Using a space based catalog we can attempt to match objects between the two and identify any unrecognized blends. In this technote we use the truth catalogs as a proxy and create a simple matching algorithm between truth and observation to label recognized and unrecognized blends. We then investigate how the rate of unrecognized blends varies with object properties such as i-mag and local density.
+   These objects can cause a variety of issues for science and simple validation. 
+   We can identify such objects by using higher resolution imaging from a space based telescope that will not be affected by ground based seeing and then label detected objects as isolated, recognized blends, or unrecognized blends.
+   We find that for :math:`i > 23`, 15\% to 20\% of objects are unrecognized blends. 
 
+.. We then investigate various factors that influence the fraction of unrecognized blends. 
 
 Data
 ===============
@@ -28,22 +27,40 @@ Data
 
    * In the observed catalog we only have :code:`extendedness` which is 1 for extended objects. We assume all extended objects are galaxies and use the two interchangibly 
 
-The third Operations Rehearsal (OR3) simulated 3 nights of observation that were then processed by the science pipelines.
-The simulations are built on top of a set of DC2 patches which were then processed to mimic realistic observational conditions.
-We use both the nightly catalog and the cumulative co-add catalog.
-The catalog can be accessed using the :code:`/repo/embargo` repo and found in the :code:`LSSTComCamSim/runs/intermittentcumulativeDRP/20240402_03_04/d_2024_03_29/DM-43865` collection.
 
-The observed catalog goes through a detection and deblending step which can deal with ``recognized blends.``
-In the science pipeline, the process of deblending produces children objects from a given parent object with both existing in the catalog.
-In order to remove duplicates from the catalog we work only with the deblended children and not parents along with two other quality control flags --- one to ensure that an object is not a sky object and another to ensure that the object is in the inner part of an image.
-All three flags are combined into the :code:`detect_isPrimary` flag which we apply to the observed catalog.
-In the observed catalog, a loose proxy for star-galaxy classification can be done via the :code:`extendedness` flag.
-In this technote we will use "observed galaxy" and "extended object" interchangibly.
 
-To label detected objects as isolated galaxies or unrecognized blends we require a higher resolution catalog which corresponds to space based data for actual operations and input truth for simulations.
-The truth catalogs for this run include galaxies, stars, and solar system objects of which we only consider the galaxies and stars.
-The input truth catalog for solar system objects does not include an *i*-magnitude and while they will cause blending, difference imaging is likely to offer much better mitigation of these sources than deblending.
-The simulated images are built on top of a set of DC2 patches with input catalogs in :code:`/sdf/data/rubin/shared/ops-rehearsals/ops-rehearsal-3/imSim_catalogs`. 
+.. The Commissioning Camera (ComCam) was a stand-in camera used by the Vera Rubin Observatory to test the adaptive optics system.
+
+The Extended Chandra Deep Field-South (ECDFS), or also known as GOODS-South, is an extension to the original Chandra Deep Field-South which was originally done in X-Ray but has since been observed across many bands.
+The Commissioning Camera (ComCam) was able to observe this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth.
+This data was then processed several times through the Rubin pipelines enabling rapid improvement to the entire system.
+Unrecognized blends allows us to understand some of the inherent failure modes of object detection. 
+We use the :code:`/repo/dp1` repo and :code:`LSSTComCam/runs/DRP/DP1/v29_0_0/DM-50260` collection for ComCam data along with HST CANDELS data. 
+
+The DP1 catalog includes a :code:`deblending` algorithm which means with accurate detection it is able to parse isolated and ``recognized blends.``
+Deblending produces children objects from a parent object, both of which are in the catalog and needs to be pruned in order to remove duplicates. 
+We apply the general :code:`detect_isPrimary` flag which removes the parent objects (if child object exist) from the catalog along with removing any sky objects and that the object is from the inner part of both a tract and a patch. 
+We will use the terms "extended object" (defined by :code:`refExtendedness == 1`) and "observed galaxy" interchangibly.
+We place two cuts on the HST catalog, that the F814 magnitude be greater than some tunable value which we call the space magnitude (:math:`m_s`) and that :code:`FLAG == 0` which removes only 318 objects.
+Details on the HST :code:`FLAG` parameter can be found `here <https://archive.stsci.edu/hlsps/candels/goods-s/catalogs/v1/hlsp_candels_hst_wfc3_goodss-tot-multiband_f160w_v1_readme.pdf>`_. 
+
+The overlap between the two catalogs can be seen in :numref:`overlap` and the magnitude distribution (:math:`i` for ComCam and F814 for HST) in :numref:`magdist`.
+
+.. _overlap:
+.. figure:: ./_static/hst_comcam_overlap.png
+
+        Area of overlap between the two surveys.
+
+.. _magdist:
+.. figure:: ./_static/hst_comcam_magdist.png
+
+        Log scale histogram of i-magnitude distribution for ComCam and F814-magnitude for HST. The dashed lines are the completeness limits of 25.4 and 26.5 respectively.
+
+
+.. To label detected objects as isolated galaxies or unrecognized blends we require a higher resolution catalog which corresponds to space based data for actual operations and input truth for simulations.
+   The truth catalogs for this run include galaxies, stars, and solar system objects of which we only consider the galaxies and stars.
+   The input truth catalog for solar system objects does not include an *i*-magnitude and while they will cause blending, difference imaging is likely to offer much better mitigation of these sources than deblending.
+   The simulated images are built on top of a set of DC2 patches with input catalogs in :code:`/sdf/data/rubin/shared/ops-rehearsals/ops-rehearsal-3/imSim_catalogs`. 
 
 Matching
 ========
@@ -71,38 +88,68 @@ Matching
    * Other options are available! Ellipse overlap + :code:`friendly` that gives *blend entropy*
    * :code:`friendly` is being integrated into the pipeline and results on DC2 (not directly on OR3) are shown below
 
-Observed and truth catalogs in hand, we can start to label objects in the observed catalog as isolated objects (pure), recognized blends, or unrecognized blends by matching between the two catalogs.
-After aligning astrometry, we can use position information (RA and DEC) to match objects between the two catalogs.
-If we query around the ground based RA and DEC using a small radius we would expect to get a single match in the truth catalog for a pure galaxy whereas we would expect to see multiple for a blended object.
-To differentiate between recognized and unrecognized blends, we would also need to query a small radius in the ground catalog with the recognized blends having an equal number of objects to that in the truth query while unrecognized blends will have fewer.
-Formally, let :math:`N_g` be the number of ground catalog objects in some radius :math:`r` centered on the position of a ground object (:math:`N_g > 1` always), :math:`N_s` be the number of space catalog objects in some radius :math:`r` centered on the same position.
-If :math:`N_s > N_g` we have a *candidate unrecognized blend* whereas the converse :math:`N_s \leq N_g` can be a **pure galaxy**, **recognized blend**, or spurious detection.
+Ground and space catalogs in hand, we can start to label objects in the ground catalog as isolated objects (pure), recognized blends, or unrecognized blends by matching between the two catalogs.
+The general idea will be to generate a list of candidate unrecognized blends and then prune that list for the problematic unrecognized blends.
+This includes removing pure and recognized blends, along with removing any unrecognized blends that are unlikely to be contaminated (a 23-mag blended with a 27 mag).
 
-        .. Even if blending was not an issue we would not be able to create a clean one to one map between the two catalogs due to the truth catalog having dim objects that avoid detection and the observed catalog having spurious detections.
 
-Once we have a set of candidate blends, we can apply magnitude cuts on these to isolate to the blends we anticipate to be problematic.
+Seemingly the simplest way to match between the two catalogs would be to use pure spatial information, RA and DEC. 
+Querying the ground and space catalogs within some :code:`search_radius` (which we choose to be the same for both catalogs) and then comparing the counts which can be done quickly using a k-d tree datastructure like the one implemented in `scipy <10.1038/s41592-019-0686-2.>`_ as :code:`scipy.spatial.kdtree`.
+This can work well for pure objects but can lead to inconsistent results when varying the :code:`search_radius` parameter.
+The purely spatial matching will also be inconsistent in labelling recognized blends properly. 
+However, it is a common matcher so the results are included below but elect to pursue a more involed **ellipse matcher.**
+
+
+
+The ellipse matcher uses the position (RA, DEC) and shape parameters (A, B, :math:`\Theta`) to model objects in both catalogs as ellipses and then require that there be overlap between the ground ellipse and space ellipse.
+If there are multiple space ellipses overlapping with the same ground ellipse, that object is an unrecognized blend.
+For DP1, the shape parameters come from :code:`shape_xx`, :code:`shape_xy`, and :code:`shape_yy` that can be converted to A, B, and :math:`\Theta` while the HST catalog includes these values as measured from Source Extractor.
+Note that a pixel-to-arcsecond factor must be used to make sure that the two catalogs have meaningfully consistent units when we make comparisons.
+The center of each object, measured by RA and DEC, with the above parameters, A, B, and :math:`\Theta`, can then be turned to the form of
+
+.. math::
+
+        Ax^2 + By^2 + Cxy + Dx + Ey + F = 0
+
+which can be used in an analytic expression to determine if there is overlap with another ellipse.
+On average, the product :math:`\sqrt{A \times B} \approx` the half-light radius so we scale both parameters by a :code:`candidate_boost_factor` which we will set to 2 unless otherwise specified.
+
+For each ground object, we query for objects within 5'' of the original ground object in both the ground and space catalog and determine if there is any overlap in either catalog.
+We query the ground catalog to account for recognized blends.
+If there are more space objects (:math:`\hat{N_s}`) than ground objects (:math:`\hat{N_g}`), the object is an unrecognized blend.
+If there are equal amounts then the object is either ``pure`` (:math:`\hat{N_s} = \hat{N_g} = 1`)) or ``recognized blend`` (:math:`\hat{N_s} = \hat{N_g} > 1`).
+In the case of missing space data or spurious detections (:math:`\hat{N_g} > \hat{N_s}`), the object is ignored for subsequent analysis.
+
+Once we have a set of candidate blends, we can apply magnitude cuts on these to isolate to the problematic unrecognized blends.
 For each candidate, we require that the set of truth objects pass 2 cuts:
 
-    1. The difference between a truth object and the brightest in the set in band X should be small :math:`\Delta_X < m_\Delta`
-    2. The truth objects should not be too dim in band X :math:`m_X > m_b`
+    #. The truth objects should not be too dim in band X :math:`m_X < m_s`
+    #. The difference between a truth object and the brightest in the set in band X should be small :math:`\Delta_X < m_\Delta`
 
+The first cut can be understood as requiring completeness in the space catalog with the second restricting our search to blends that are likely to have an impact on measured properties such as flux and shape. 
+For HST, we will focus on the F814 band.
 Once applying the cuts on the truth catalog we recount the number of objects in the sets and promote any surviving candidate unrecognized blends to candidate blends.
 In summary we have the following process: 
 
-   * To generate a candidate blend
-        #.  Querying a radius :math:`r` around the ground RA and DEC in the ground catalog gives :math:`N_g` ground objects
-        #.  Querying a radius :math:`r` around the ground RA and DEC in the space catalog gives :math:`N_s` space objects
-        #.  If :math:`N_s > N_g` we have a *candidate unrecognized blend*
-        #.  If :math:`N_s \leq N_g` we have a **recognized blend** or a **spurious detection**.
+- For each ground detection
 
-   * Promoting a *candidate unrecognized blend* requires the truth objects to pass 2 cuts:
-        * :math:`\Delta_X < m_\Delta`
-        * :math:`m_X > m_b`
+        #.  Querying a radius :math:`r` around the ground detection RA and DEC in the ground catalog gives :math:`\hat{N_g}` ground objects.
+        #.  Querying a radius :math:`r` around the ground detection RA and DEC in the space catalog gives :math:`\hat{N_s}` space objects.
+        #.  Each of the :math:`\hat{N_g}` objects are converted into ellipses and check for overlap with the ground detection leaving :math:`N_g` objects.
+        #.  Each of the :math:`\hat{N_s}` objects are converted into ellipses and check for overlap with the ground detection leaving :math:`N_s` objects.
+        #.  If :math:`N_s > N_g` we have a **candidate unrecognized blend**.
+        #.  If :math:`N_s \leq N_g` we have a *recognized blend* or a *spurious detection*.
 
-It is important to note that this is not the only option to match for unrecognized blends. More complicated schemes include Shuang's ellipse matching algorithm and Manon's :code:`friendly` producing a blend entropy for each object.
-:code:`friendly` is being implemented into the science pipelines but for comparison we present some results when used on DC2 simulations on NERSC.
-One benefit to our naive matching scheme is that it allows us to use KDtrees which are fast and efficient.
+- Promoting a *candidate unrecognized blend* requires the space objects to pass 2 cuts:
 
+        * :math:`m_{F814} < m_s`.
+        * :math:`\Delta_{F814} < m_\Delta`.
+
+
+In total, we use two matching algorithms, :code:`ellipse` and :code:`spatial` to generate a list of candidate blends and then refine using the same magnitude requirements.. 
+
+.. Another option is to process the candidates through the :code:`blend-entropy` scheme which can weight each blend based on distance, overlap, and magnitude of objects.
+   This is a robust scheme that allows for handling of both unrecognized blends and problematic recognized blends but quite slow due to the computational overhead. 
 
 
 .. 
@@ -124,32 +171,34 @@ One benefit to our naive matching scheme is that it allows us to use KDtrees whi
 Unrecognized Blends
 ==============================
 
-Using the kd-tree matching algorithm we can label unrecognized blends in the ground catalog. 
-Our fiducial settings have :math:`r = 1''`, :math:`m_\Delta = 2.5`, and :math:`m_b = 28`.
-We then investigate how unrecognized blends correlate with various parameters such as object i-magnitude, shape parameters, and local density.
-During commissioning we can repeat this process on real data allowing for more robust tests of the science pipeline. 
+Using the matching schemes detailed above we can label isolated objects (pure), recognized blends and unrecognized blends in the ground catalog.
+Any other object is left out of the catalog.
+Unless otherwise specified, we set :code:`candidate_boost_factor = 2`, :math:`m_s = 26.5`, and :math:`m_\Delta = 2`.
+Due to setting :math:`m_\Delta = 2`, even though the ComCam :math:`i`-mag distribution peaks at 25, we are only able to confidently label blends up to :math:`m_g = 24.5`.
+When relevant, the simpler KDTree method will also be presented showing results using :code:`search_radius = candidate_boost_factor`.
 
 
 Magnitude Dependence
 --------------------------
-We expect that blending will increase at the higher magnitudes as dimmer objects are easier to avoid detection and there are more galaxies.
-Other studies of unrecognized have found a similar trend which we show below.
+We expect that blending will increase at the higher magnitudes as dimmer objects are harder to uniformly detect and there are simply more galaxies.
+The fraction of unrecognized blends as a function of the observed *i*-mag is shown with a comparison between the two methods included.
+Restricting to only extended objects -- observed galaxies -- produces almost no change in the distribution of unrecognized blends.
 
-The fraction of unrecognized blends as a function of the observed *i-mag* is shown below including the results using :code:`friendly` on DC2.
+.. figure:: _static/unrec_blend_imag.png
 
-.. figure:: _static/unrec_blend_dc2_comparison.png
+   Fraction of unrecognized blends as a function of observed *i-mag*. Ellipse matching results are shown in blue and pure spatial results using blend entropy in orange. The two show a similar bump at the faint end while there is not strict agreement.
 
-   Fraction of unrecognized blends as a function of observed *i-mag*. The kd results are shown in blue and results using blend entropy in orange. The two show a similar bump at the faint end while there is not strict agreement.
 
-If we restrict to only detected galaxies we se a slight increase
+In comparison to the Roman-Rubin simulations by `Troxel et al. <https://arxiv.org/pdf/2209.06829>`_, we see find similar levels of blending when using purely spatial matching but not with the ellipse matching. 
 
-.. figure:: ./_static/unrec_blend_extended.png
+..  If we restrict to only detected galaxies we see a slight increase
+        .. figure:: ./_static/unrec_blend_extended.png
 
-    Fraction of unrecognized blend as a function of observed i-mag including a restriction on only observed galaxies. There is a slight increase corresponding to extended objects being easier to overlap with.
+            Fraction of unrecognized blend as a function of observed i-mag including a restriction on only observed galaxies. There is a slight increase corresponding to extended objects being easier to overlap with.
 
 Shape Parameters
 -----------------
-Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will greatly impact shear.
+Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will impact shear.
 The inverse question, if certain shapes will impact unrecognized blends is not as well studied.
 It is possible that there would be a bias due to the orientation of the pixel grid which we investigate below.
 
@@ -159,69 +208,51 @@ We combine the second moments via
 .. math::
    e_1 = \frac{Q_{xx} - Q_{yy}}{Q_{xx} + Q_{yy}} \;\;\; e_2 = \frac{2Q_{xy}}{Q_{xx} + Q_{yy}}
 
-We create :math:`Q_{rr} = \sqrt{Q_{xx}^2 + Q_{yy}^2}`.
+..
+        We create :math:`Q_{rr} = \sqrt{Q_{xx}^2 + Q_{yy}^2}`.
 
-.. figure:: ./_static/unrec_blend_shapeij.png
-   
-        Fraction of unrecognized blend as a function of measured second moments on observed galaxies. The range is limited to the 95% range for each measurement.
+        .. figure:: ./_static/unrec_blend_shapeij.png
+           
+                Fraction of unrecognized blend as a function of measured second moments on observed galaxies. The range is limited to the 95% range for each measurement.
 
 .. figure:: ./_static/unrec_blend_pol.png
 
         Fraction of unrecognized blend as a function of ellipse polarization on observed galaxies.
 
 Given that there is little to no difference among the shape parameters, this gives good confidence that the pixel grid is not impacting shape measurements and unrecognized blends in strange ways.
-The wing structure is not necessarily cause for concern but it is interesting that objects with larger shapes tend to be unrecognized blends.
-The bins at the edge of the torus have :math:`N\approx O(10)` so a larger sample is required for any definitive claim.
-
-.. figure:: ./_static/heatmap_e1_e2.png
-
-        Fraction of unrecognized blends as a function of ellipse polarizations on observed galaxies.
+The wing structure is not necessarily cause for concern but it is interesting that objects with larger polarization is correlated with to be unrecognized blends.
 
 Local Density
 --------------
-Finally, we know clusters and other dense fields (like the deep fields) are expected to be extremely blended motivating looking into how local density affects unrecognized blend fraction.
+Finally, we know clusters and other dense fields (like the deep fields) are expected to be extremely blended which motivates looking into how local density affects unrecognized blend fraction.
 
 To estimate the local density, :math:`\sum(r_i)`, we use Equation 7 from `Darvish et al <https://arxiv.org/pdf/1503.07879.pdf>`_.
 
 .. math::
    \sum(r_i) = \frac{\sum_{j=1}^k j}{\pi \sum_{j=1}^k d_{ij}^2}
 
-Where :math:`d_{ij}` is the distance between object :math:`i` and :math:`j`.
-When querying for neighbors, we can either look at the object catalog when testing the pipeline or the truth catalog when testing for science.
-There will likely be some underlying science that can be extracted by using the truth catalog density but we limit our focus to the detected catalog to test the pipeline.
+Where :math:`d_{ij}` is the distance between object :math:`i` and :math:`j` and :math:`k` is the number of neighbors which we set to 5.
+We look at both the ground and space based catalog and calculate two independent densities.
 
-The distribution of density and the relationship with unrecognized blends are shown below
-
-.. figure:: ./_static/obj_density.png
-
-        Log scale histogram of object density using 5 neighbors.
+The relationship of unrecognized blends and local density are shown below
 
 
 .. figure:: ./_static/unrec_blend_density.png
 
-        Fraction of unrecognized blend as a function of local detected density (left) and local true density (right). 
+        Fraction of unrecognized blend as a function of ComCam object density (blue) and HST object density (orange). 
 
-As expected, the fraction of unrecognized blends monotonically increases with true density however the observed density flat-lines.
+As expected, the fraction of unrecognized blends monotonically increases with HST density; however, rather unexpectedly, we see that the blending rate decreases with the ground based ComCam density.
 
 
 .. note:: 
-    Removed the heatmaps section since I'm not sure what the actual take away is...
+    What the heck is happening with the comcam density?! Something to do with the deblender doing well?
 
 .. 
-        Heatmaps
-        ---------
-
-        We also make some heatmaps to see how multiple variables interact.
-
-        .. image:: ./_static/heatmap_e1_e2.png
-
-        Figure 7. Fraction of unrecognized blend 
-
 
 Conclusion
 ==========
-We have created a set of tools that enable us to match between catalogs to label unrecognized blends and investigate how the rate of unrecognized blends vary with object properties.
-This technote has the ideal case using simulated data along with true input catalogs which gives a good goalpost for commissioning data. 
-During commissioning and observation we intend to re-do this analysis using space based data which will enable future studies on unrecognized blends and how to mitigate them.
 
-
+We have outlined a matching scheme that allows for robustly classifying objects as isolated, recognized blends and unrecognized blends.
+Using the ellipse matching method, we investigate the occurance of unrecognized blends in the ComCam ECDFS data and how it varies with severalproperties like *i*-mag and local density.
+Comparing to simulations like the Roman-Rubin simulation, we find similar rates of unrecognized blends versus *i*-magnitude when using purely spatial matching but not ellipse matching.
+In total, unrecognized blends in ComCam is at the expected levels and not suffering from pipeline issues.
