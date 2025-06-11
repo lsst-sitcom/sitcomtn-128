@@ -3,9 +3,9 @@ Unrecognized Blends in ComCam ECDFS
 #############################################
 
 .. abstract::
-   Unrecognized blends are a class of blended objects that are mistakenly identified as a single object.
+   Unrecognized blends are a class of blended objects where two (or more) objects are so close on the sky that they are mistakenly identified as a single object.
    These objects can cause a variety of issues for science and simple validation. 
-   We can identify such objects by using higher resolution imaging from a space based telescope that will not be affected by ground based seeing and then label detected objects as isolated, recognized blends, or unrecognized blends.
+   We can identify such objects by using higher resolution imaging from space-based telescopes that are not affected by ground-based seeing and then label detected objects as isolated, recognized blends, or unrecognized blends.
    We find that for :math:`i > 23`, 15\% to 20\% of objects are unrecognized blends. 
 
 .. We then investigate various factors that influence the fraction of unrecognized blends. 
