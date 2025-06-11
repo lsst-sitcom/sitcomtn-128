@@ -31,17 +31,17 @@ Data
 
 .. The Commissioning Camera (ComCam) was a stand-in camera used by the Vera Rubin Observatory to test the adaptive optics system.
 
-The Extended Chandra Deep Field-South (ECDFS), or also known as GOODS-South, is an extension to the original Chandra Deep Field-South which was originally done in X-Ray but has since been observed across many bands.
-The Commissioning Camera (ComCam) was able to observe this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth.
-This data was then processed several times through the Rubin pipelines enabling rapid improvement to the entire system.
-Unrecognized blends allows us to understand some of the inherent failure modes of object detection. 
+The Extended Chandra Deep Field-South (ECDFS), or also known as GOODS-South, is an extension to the original Chandra Deep Field-South which was originally observed in X-Rays but has since been observed across many bands.
+The Commissioning Camera (ComCam) observed this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth.
+This data was then processed several times through the Rubin pipelines enabling rapid improvements to the entire system.
+Unrecognized blends allow us to understand some of the inherent failure modes of object detection when objects are too close on the sky to be differentiated. 
 We use the :code:`/repo/dp1` repo and :code:`LSSTComCam/runs/DRP/DP1/v29_0_0/DM-50260` collection for ComCam data along with HST CANDELS data. 
 
-The DP1 catalog includes a :code:`deblending` algorithm which means with accurate detection it is able to parse isolated and ``recognized blends.``
-Deblending produces children objects from a parent object, both of which are in the catalog and needs to be pruned in order to remove duplicates. 
-We apply the general :code:`detect_isPrimary` flag which removes the parent objects (if child object exist) from the catalog along with removing any sky objects and that the object is from the inner part of both a tract and a patch. 
+The LSST Science Pipelines include a :code:`deblending` algorithm which means with accurate object detection it is able to parse isolated and ``recognized blends.``
+Deblending produces ``children'' objects from a ``parent'' object, both of which are in the catalog and need to be pruned in order to remove duplicates. 
+We apply the general :code:`detect_isPrimary` flag which removes the parent objects (if child object exist) from the catalog along with removing any ``sky objects'' and require that the object is from the inner part of both a tract and a patch. 
 We will use the terms "extended object" (defined by :code:`refExtendedness == 1`) and "observed galaxy" interchangibly.
-We place two cuts on the HST catalog, that the F814 magnitude be greater than some tunable value which we call the space magnitude (:math:`m_s`) and that :code:`FLAG == 0` which removes only 318 objects.
+We place two cuts on the HST catalog, that the F814W magnitude be brighter than  tunable value which we call the space magnitude (:math:`m_s`) and that :code:`FLAG == 0` which removes only 318 objects.
 Details on the HST :code:`FLAG` parameter can be found `here <https://archive.stsci.edu/hlsps/candels/goods-s/catalogs/v1/hlsp_candels_hst_wfc3_goodss-tot-multiband_f160w_v1_readme.pdf>`_. 
 
 The overlap between the two catalogs can be seen in :numref:`overlap` and the magnitude distribution (:math:`i` for ComCam and F814 for HST) in :numref:`magdist`.
