@@ -44,17 +44,18 @@ We will use the terms "extended object" (defined by :code:`refExtendedness == 1`
 We place two cuts on the HST catalog, that the F814W magnitude be brighter than  tunable value which we call the space magnitude (:math:`m_s`) and that :code:`FLAG == 0` which removes only 318 objects.
 Details on the HST :code:`FLAG` parameter can be found `here <https://archive.stsci.edu/hlsps/candels/goods-s/catalogs/v1/hlsp_candels_hst_wfc3_goodss-tot-multiband_f160w_v1_readme.pdf>`_. 
 
-The overlap between the two catalogs can be seen in :numref:`overlap` and the magnitude distribution (:math:`i` for ComCam and F814 for HST) in :numref:`magdist`.
+The overlap between the two catalogs can be seen in :numref:`overlap` and the magnitude distribution (:math:`i` for ComCam and F814W for HST) in :numref:`magdist`.
 
 .. _overlap:
 .. figure:: ./_static/hst_comcam_overlap.png
 
         Area of overlap between the two surveys.
+.. Comment:  explain the color coding
 
 .. _magdist:
 .. figure:: ./_static/hst_comcam_magdist.png
 
-        Log scale histogram of i-magnitude distribution for ComCam and F814-magnitude for HST. The dashed lines are the completeness limits of 25.4 and 26.5 respectively.
+        Log scale histogram of i-magnitude distribution for ComCam and F814W-magnitude for HST. The dashed lines are the approximate completeness limits of 25.4 and 26.5 respectively.
 
 
 .. To label detected objects as isolated galaxies or unrecognized blends we require a higher resolution catalog which corresponds to space based data for actual operations and input truth for simulations.
@@ -89,15 +90,14 @@ Matching
    * :code:`friendly` is being integrated into the pipeline and results on DC2 (not directly on OR3) are shown below
 
 Ground and space catalogs in hand, we can start to label objects in the ground catalog as isolated objects (pure), recognized blends, or unrecognized blends by matching between the two catalogs.
-The general idea will be to generate a list of candidate unrecognized blends and then prune that list for the problematic unrecognized blends.
-This includes removing pure and recognized blends, along with removing any unrecognized blends that are unlikely to be contaminated (a 23-mag blended with a 27 mag).
-
+The general idea will be to generate a list of candidate unrecognized blends and then refine that list, e.g. by removing any unrecognized blends that are unlikely to be contaminated (a 23-mag blended with a 27 mag), as well as removing residual pure objects and recognized blends.
 
 Seemingly the simplest way to match between the two catalogs would be to use pure spatial information, RA and DEC. 
 Querying the ground and space catalogs within some :code:`search_radius` (which we choose to be the same for both catalogs) and then comparing the counts which can be done quickly using a k-d tree datastructure like the one implemented in `scipy <10.1038/s41592-019-0686-2.>`_ as :code:`scipy.spatial.kdtree`.
 This can work well for pure objects but can lead to inconsistent results when varying the :code:`search_radius` parameter.
 The purely spatial matching will also be inconsistent in labelling recognized blends properly. 
-However, it is a common matcher so the results are included below but elect to pursue a more involed **ellipse matcher.**
+.. Comment:  Not sure I understand, can we rewrite the previous 2 sentences as:  This works well for pure objects, but introduced a dependence on the :code:`search_radius` parameter.  Morevoer, purely spatial matching can mistakenly label recognized blends as unrecoginzed blends ..
+However, it is a common matcher so the results are included below but we elect to pursue a more involed **ellipse matcher.**
 
 
 
