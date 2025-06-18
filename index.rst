@@ -33,11 +33,6 @@ The overlap between the two catalogs can be seen in :numref:`overlap` and the ma
         Footprint of the two surveys. HST is shown in black and DP1 data is shown in the non-black points. Each non-black color refers to a different patch in the ECDFS DP1 data.
 
 
-.. _magdist:
-.. figure:: ./_static/hst_comcam_magdist.png
-
-        Log scale histogram of i-magnitude distribution for ComCam and F814W-magnitude for HST. The dashed lines are the approximate completeness limits of 25.4 and 26.5 respectively.
-
 Matching
 ========
 
@@ -134,7 +129,7 @@ Magnitude Dependence
 --------------------------
 We expect that blending will increase at the higher magnitudes as fainter objects are both more abundant (sharp increase in the number density) and harder to uniformly detect.
 The fraction of unrecognized blends as a function of the observed *i*-mag is shown in :numref:`unrec-i` with a comparison between the two methods included.
-Restricting to only extended objects -- observed galaxies -- produces almost no change in the distribution of unrecognized blends.
+Restricting to only extended objects -- observed galaxies -- produces minimal change in the distribution of unrecognized blends.
 
 .. _unrec-i:
 .. figure:: _static/unrec_blend_imag.png
@@ -152,28 +147,30 @@ In comparison to the Roman-Rubin simulations by `Troxel et al. <https://arxiv.or
 Shape Parameters
 -----------------
 Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will impact shear estimates.
-The inverse question, if certain shapes are more likely to be unrecognized blends will be studied here.
+The inverse question, if certain shapes are more likely to be unrecognized blends is shown in :numref:`unrecpol`.
 
 .. It is possible that there would be a bias due to the orientation of the pixel grid which we investigate below.
 
 We look at the second moment, :math:`Q_{ij}`, of extended objects which we combine via 
 
 .. math::
-   e_1 = \frac{Q_{xx} - Q_{yy}}{Q_{xx} + Q_{yy}} \;\;\; e_2 = \frac{2Q_{xy}}{Q_{xx} + Q_{yy}}
+   e_1 = \frac{Q_{xx} - Q_{yy}}{Q_{xx} + Q_{yy}} \;\;\; e_2 = \frac{2Q_{xy}}{Q_{xx} + Q_{yy}}.
 
-..
-        We create :math:`Q_{rr} = \sqrt{Q_{xx}^2 + Q_{yy}^2}`.
+We also study the distribution of :math:`|e| = \sqrt{e_1^2 + e_2^2}` for isolated and unrecognized blends in :numref:`eabs`.
 
-        .. figure:: ./_static/unrec_blend_shapeij.png
-           
-                Fraction of unrecognized blend as a function of measured second moments on observed galaxies. The range is limited to the 95% range for each measurement.
-
+.. _unrecpol:
 .. figure:: ./_static/unrec_blend_pol.png
 
         Fraction of unrecognized blend as a function of ellipse polarization on observed galaxies.
 
-Given that there is little to no difference among the shape parameters, this gives good confidence that the pixel grid is not impacting shape measurements and unrecognized blends in strange ways.
-The wing structure is somewhat expected as blends likely have a non-zero angular separation causing a larger polarization.
+.. _eabs:
+.. figure:: ./_static/absolute_e_distribution.png
+
+        Normalized distribution of e for unrecognized blends in blue and isolated objects in orange. The unrecognized blends peak further along corresponding to the non-zero angular separation causing a larger ellipticity. 
+
+Given that there is little to no difference among the shape parameters, :math:`e_1` and :math:`e_2`, this gives good confidence that the pixel grid is not impacting shape measurements and unrecognized blends in strange ways.
+The offset in mean :math:`|e|` matches the winged structure as unrecognized blends likely have a non-zero angular separation which causes a larager total ellipticity.
+
 
 .. The wing structure is not necessarily cause for concern but it is interesting that objects with larger polarization is correlated with to be unrecognized blends.
 
@@ -189,9 +186,10 @@ To estimate the local density, :math:`\sum(r_i)`, we use a weighted sum of dista
 Where :math:`d_{ij}` is the distance between object :math:`i` and :math:`j` and :math:`k` is the number of neighbors which we set to 5.
 We look at both the ground and space based catalog and calculate two independent densities.
 
-The relationship of unrecognized blends and local density are shown below
+The relationship of unrecognized blends and local density are shown in :numref:`unrecdensity`.
 
 
+.. _unrecdensity:
 .. figure:: ./_static/unrec_blend_density.png
 
         Fraction of unrecognized blend as a function of ComCam object density (blue) and HST object density (orange). 
@@ -199,9 +197,9 @@ The relationship of unrecognized blends and local density are shown below
 As expected, the fraction of unrecognized blends monotonically increases with HST density; however, rather unexpectedly, we see that the blending rate decreases with the ground based ComCam density.
 We conclude that the ComCam measured object density is not a good predictor of the incidence of blends.
 
-
-.. note:: 
-    What the heck is happening with the comcam density?! Something to do with the deblender doing well?
+.. 
+        .. note:: 
+            What the heck is happening with the comcam density?! Something to do with the deblender doing well?
 
 .. 
 
@@ -213,6 +211,14 @@ Using the ellipse matching method, we investigate the occurance of unrecognized 
 Comparing to simulations like the Roman-Rubin simulation, we find similar rates of unrecognized blends versus *i*-magnitude when using purely spatial matching but not ellipse matching.
 In total, unrecognized blends in ComCam is at the expected levels and not suffering from any pipeline issues.
 
+
+
+Appendix
+============
+.. _magdist:
+.. figure:: ./_static/hst_comcam_magdist.png
+
+        Log scale histogram of i-magnitude distribution for ComCam and F814W-magnitude for HST. The dashed lines are the approximate completeness limits of 25.4 and 26.5 respectively.
 
 .. 
         Citations
