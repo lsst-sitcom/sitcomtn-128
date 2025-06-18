@@ -147,7 +147,7 @@ In comparison to the Roman-Rubin simulations by `Troxel et al. <https://arxiv.or
 Shape Parameters
 -----------------
 Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will impact shear estimates.
-The inverse question, if certain shapes are more likely to be unrecognized blends is shown in :numref:`unrecpol`.
+The inverse question, if certain shapes are more likely to be unrecognized blends is shown in :numref:`unrecpol` restricting to galaxies only.
 
 .. It is possible that there would be a bias due to the orientation of the pixel grid which we investigate below.
 
@@ -156,7 +156,7 @@ We look at the second moment, :math:`Q_{ij}`, of extended objects which we combi
 .. math::
    e_1 = \frac{Q_{xx} - Q_{yy}}{Q_{xx} + Q_{yy}} \;\;\; e_2 = \frac{2Q_{xy}}{Q_{xx} + Q_{yy}}.
 
-We also study the distribution of :math:`|e| = \sqrt{e_1^2 + e_2^2}` for isolated and unrecognized blends in :numref:`eabs`.
+We also study the distribution of :math:`|e| = \sqrt{e_1^2 + e_2^2}` for isolated and unrecognized blends in :numref:`eabs`, similarly restricting to galaxies only.
 
 .. _unrecpol:
 .. figure:: ./_static/unrec_blend_pol.png
