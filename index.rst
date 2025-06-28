@@ -171,7 +171,8 @@ We also study the distribution of :math:`|e| = \sqrt{e_1^2 + e_2^2}` for isolate
 Given that there is little to no difference among the shape parameters, :math:`e_1` and :math:`e_2`, this gives good confidence that the pixel grid is not impacting shape measurements and unrecognized blends in strange ways.
 The offset in mean :math:`|e|` matches the winged structure as unrecognized blends likely have a non-zero angular separation which causes a larager total ellipticity.
 
-.. note:: Add 1D e plot and add text a la Dawson blending paper
+
+.. note:: Add 1D e plot and add text a la Dawson blending paper. Should make smaller bins for this plot
 
 
 .. The wing structure is not necessarily cause for concern but it is interesting that objects with larger polarization is correlated with to be unrecognized blends.
@@ -198,10 +199,6 @@ The relationship of unrecognized blends and local density are shown in :numref:`
 
 As expected, the fraction of unrecognized blends monotonically increases with HST density; however, rather unexpectedly, we see that the blending rate decreases with the ground based ComCam density.
 We conclude that the ComCam measured object density is not a good predictor of the incidence of blends.
-
-.. 
-        .. note:: 
-            What the heck is happening with the comcam density?! Something to do with the deblender doing well?
 
 .. 
 
