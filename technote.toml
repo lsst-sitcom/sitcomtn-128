@@ -8,16 +8,25 @@ date_created = 2024-05-22T20:55:01Z
 organization.name = "Vera C. Rubin Observatory"
 organization.ror = "https://ror.org/048g3cy84"
 license.id = "CC-BY-4.0"
+doi = "10.5281/zenodo.15778728"
 
 [technote.status]
-state = "draft"
+state = "stable"
 
 [[technote.authors]]
 name.given = "Prakruth"
 name.family = "Adari"
 internal_id = "adarip"
 orcid = "https://orcid.org/0000-0001-9431-3806"
+
 [[technote.authors.affiliations]]
 name = "Department of Physics and Astronomy"
 internal_id = "StonyBrookU"
 address = "Stony Brook University, Stony Brook, NY 11794, USA"
+
+
+[[technote.authors]]
+name.given = "Anja"
+name.family = "von der Linden"
+internal_id = "lindena"
+orcid = "https://orcid.org/0000-0002-3881-7724"
