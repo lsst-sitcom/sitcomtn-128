@@ -13,12 +13,12 @@ Data
 ===============
 
 The Extended Chandra Deep Field-South (ECDFS), or also known as GOODS-South, is an extension to the original Chandra Deep Field-South which was originally observed in X-Rays but has since been observed across many bands.
-The Commissioning Camera (ComCam) observed this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth.
+The Commissioning Camera (ComCam) observed this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth :cite:`RTN-011`.
 This data was then processed several times through the Rubin pipelines enabling rapid improvements to the entire system.
 Unrecognized blends allow us to understand some of the inherent failure modes of object detection when objects are too close on the sky to be differentiated. 
-We use the :code:`/repo/dp1` repo and :code:`LSSTComCam/runs/DRP/DP1/v29_0_0/DM-50260` collection for ComCam data along with HST CANDELS data. 
+We use the :code:`/repo/dp1` repo and :code:`LSSTComCam/runs/DRP/DP1/v29_0_0/DM-50260` collection for ComCam data along with HST CANDELS data :cite:`HST1, HST2, HST3`. 
 
-The DP1 catalog includes a :code:`deblending` algorithm which means with accurate detection it is able to parse isolated and "recognized blends."
+The DP1 catalog :cite:`RTN-095good` includes a :code:`deblending` algorithm which means with accurate detection it is able to parse isolated and "recognized blends."
 Deblending produces "children" objects from a "parent object", both of which are in the catalog and needs to be pruned in order to remove duplicates. 
 We apply the general :code:`detect_isPrimary` flag which removes the parent objects (if child object exist) from the catalog along with removing any sky objects and that the object is from the inner part of both a tract and a patch. 
 We will use the terms "extended object" (defined by :code:`refExtendedness == 1`) and "observed galaxy" interchangibly.
@@ -40,11 +40,12 @@ Ground and space catalogs in hand, we can start to label objects in the ground c
 The general idea will be to generate a list of candidate unrecognized blends and then refine that list, e.g. by removing any unrecognized blends that are unlikely to be contaminated (a 23-mag blended with a 27 mag), as well as removing residual pure objects and recognized blends.
 
 Seemingly the simplest way to match between the two catalogs would be to use pure spatial information, RA and DEC. 
-Querying the ground and space catalogs within some :code:`search_radius` (which we choose to be the same for both catalogs) and then comparing the counts which can be done quickly using a k-d tree datastructure like the one implemented in `scipy <10.1038/s41592-019-0686-2.>`_ as :code:`scipy.spatial.kdtree`.
+Querying the ground and space catalogs within some :code:`search_radius` (which we choose to be the same for both catalogs) and then comparing the counts which can be done quickly using a k-d tree datastructure like the one implemented in :code:`scipy` :cite:`scipy` as :code:`scipy.spatial.kdtree`.
 This can work well for pure objects but introduces a dependence on the :code:`search_radius` parameter.
 Moreover, purely spatial matching can mistanekly label recognized blends as unrecognized blends.
 
-However, it is a common matcher so the results are included below but elect to pursue a more involved **ellipse matcher** outlined in `Liang et al <https://arxiv.org/abs/2503.16680>`_.
+
+However, it is a common matcher so the results are included below but elect to pursue a more involved **ellipse matcher** outlined in :cite:`liang_2025`.
 The ellipse matcher uses the position (RA, DEC) and shape parameters (A, B, :math:`\Theta`) to model objects in both catalogs as ellipses and then require that there be overlap between the ground ellipse and space ellipse in order for an object to be labelled as a blend.
 If there are multiple space ellipses overlapping with the same ground ellipse, that object is an unrecognized blend.
 For DP1, the shape parameters come from :code:`shape_xx`, :code:`shape_xy`, and :code:`shape_yy` that can be converted to A, B, and :math:`\Theta` while the HST catalog includes these values as measured from Source Extractor.
@@ -137,7 +138,7 @@ Restricting to only extended objects -- observed galaxies -- produces minimal ch
    Fraction of unrecognized blends as a function of observed *i-mag*. Ellipse matching results are shown in blue and pure spatial results using blend entropy in orange. The two show a similar trend with spatial matching overestimating the number of blends. 
 
 
-In comparison to the Roman-Rubin simulations by `Troxel et al. <https://arxiv.org/pdf/2209.06829>`_, we see find similar levels of blending when using purely spatial matching but slightly lower with the ellipse matching. 
+In comparison to the Roman-Rubin simulations :cite:`Troxel`, we see find similar levels of blending when using purely spatial matching but slightly lower with the ellipse matching. 
 
 ..  If we restrict to only detected galaxies we see a slight increase
         .. figure:: ./_static/unrec_blend_extended.png
@@ -146,42 +147,52 @@ In comparison to the Roman-Rubin simulations by `Troxel et al. <https://arxiv.or
 
 Shape Parameters
 -----------------
-Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will impact shear estimates.
-The inverse question, if certain shapes are more likely to be unrecognized blends is shown in :numref:`unrecpol` restricting to galaxies only.
+Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will impact any shape estimates.
+This exact relationship was studied in some of the first work on unrecognized blends in :cite:`Dawson_2015` focusing on Subaru data.
+We repeat that analysis on ComCam data and restrict to galaxies for this section.
 
-.. It is possible that there would be a bias due to the orientation of the pixel grid which we investigate below.
+Using the second moments of extedned objects, :math:`Q_{ij}`, we combine into KSB :cite:`KSB` ellipticity components :math:`e_1` and :math:`e_2` defined as 
 
-We look at the second moment, :math:`Q_{ij}`, of extended objects which we combine via 
 
 .. math::
-   e_1 = \frac{Q_{xx} - Q_{yy}}{Q_{xx} + Q_{yy}} \;\;\; e_2 = \frac{2Q_{xy}}{Q_{xx} + Q_{yy}}.
+   e_1 = \frac{Q_{xx} - Q_{yy}}{Q_{xx} + Q_{yy}} \;\;\; e_2 = \frac{2Q_{xy}}{Q_{xx} + Q_{yy}}. 
+  
 
-We also study the distribution of :math:`|e| = \sqrt{e_1^2 + e_2^2}` for isolated and unrecognized blends in :numref:`eabs`, similarly restricting to galaxies only.
+The distribution of unrecognized blends as a function of :math:`e_1` and :math:`e_2` can be found in :numref:`unrecpol` and a comparison between the distributions of those components for unrecognized and isolated objects in :numref:`e1e2`.
 
 .. _unrecpol:
 .. figure:: ./_static/unrec_blend_pol.png
 
         Fraction of unrecognized blend as a function of ellipse polarization on observed galaxies.
 
+.. _e1e2:
+.. figure:: ./_static/e1e2_distribution.png
+
+        Normalized distribution of :math:`e_1` and :math:`e_2` for unrecognized blends (blue) and isolated objects(red). Note that the same same overall pattern between :math:`|e|` and :math:`e_i` exists persists and there is a negligible difference in shape for the two components.
+
+Given that there is little to no difference among the shape parameters, :math:`e_1` and :math:`e_2`, this gives good confidence that the pixel grid is not impacting shape measurements and unrecognized blends in strange ways.
+We also measure the total ellipticity, :math:`|e|`, as defined in :cite:`Dawson_2015` 
+
+.. math::
+   |e| = \frac{\left(Q_{xx} - Q_{yy}\right)^2 + Q_{xy}^2}{\left(Q_{xx} + Q_{yy}\right)^2}.
+
+
+The distribution of :math:`|e|` for isolated and unrecognized blends is shown in :numref:`eabs`. 
+
 .. _eabs:
 .. figure:: ./_static/absolute_e_distribution.png
 
-        Normalized distribution of e for unrecognized blends in blue and isolated objects in orange. The unrecognized blends peak further along corresponding to the non-zero angular separation causing a larger ellipticity. 
-
-Given that there is little to no difference among the shape parameters, :math:`e_1` and :math:`e_2`, this gives good confidence that the pixel grid is not impacting shape measurements and unrecognized blends in strange ways.
-The offset in mean :math:`|e|` matches the winged structure as unrecognized blends likely have a non-zero angular separation which causes a larager total ellipticity.
+        Normalized distribution of e for unrecognized blends (blue) and isolated objects (red). The longer tail for unrecognized blends is expected as the non-zero angular separation between blends causes a larger ellipticity. 
 
 
-.. note:: Add 1D e plot and add text a la Dawson blending paper. Should make smaller bins for this plot
+The offset in :math:`|e|` matches the winged structure as unrecognized blends likely have a non-zero angular separation which causes a larger total ellipticity.
 
-
-.. The wing structure is not necessarily cause for concern but it is interesting that objects with larger polarization is correlated with to be unrecognized blends.
 
 Local Density
 --------------
 Finally, we know clusters and other dense fields (like the deep fields) are expected to be extremely blended which motivates looking into how local density affects unrecognized blend fraction.
 
-To estimate the local density, :math:`\sum(r_i)`, we use a weighted sum of distances to the :math:`k` nearest neighbors following `Darvish et al <https://arxiv.org/pdf/1503.07879.pdf>`_.
+To estimate the local density, :math:`\sum(r_i)`, we use a weighted sum of distances to the :math:`k` nearest neighbors following :cite:`Darvish`.
 
 .. math::
    \sum(r_i) = \frac{\sum_{j=1}^k j}{\pi \sum_{j=1}^k d_{ij}^2}
@@ -211,6 +222,15 @@ Comparing to simulations like the Roman-Rubin simulation, we find similar rates 
 In total, unrecognized blends in ComCam is at the expected levels and not suffering from any pipeline issues.
 
 
+Acknowledgements
+=====================
+This work is based on observations taken by the CANDELS Multi-Cycle Treasury Program with the NASA/ESA HST, which is operated by the Association of Universities for Research in Astronomy, Inc., under NASA contract NAS5-26555.
+
+
+References
+==========
+
+.. bibliography:: 
 
 Appendix
 ============
