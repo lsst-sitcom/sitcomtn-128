@@ -1,31 +1,31 @@
-#############################################
-Unrecognized Blends in ComCam ECDFS
-#############################################
+##########################################################################################
+Unrecognized Blends in LSSTComCam Data Preview 1 ECDFS
+##########################################################################################
 
 .. abstract::
    Unrecognized blends are a class of blended objects where two (or more) objects are so close on the sky that they are mistakenly identified as a single object.
    These objects can cause a variety of issues for science and simple validation. 
    We can identify such objects by using higher resolution imaging from a space based telescope that will not be affected by ground based seeing and then label detected objects as isolated, recognized blends, or unrecognized blends.
-   We find that for objects with :math:`23 < i < 24.5`, 18\% of objects are unrecognized blends. 
+   We find that for objects with 23 < *i* < 24.5, 18\% of objects are unrecognized blends. 
 
 
 Data
 ===============
 
 The Extended Chandra Deep Field-South (ECDFS), or also known as GOODS-South, is an extension to the original Chandra Deep Field-South which was originally observed in X-Rays but has since been observed across many bands.
-The Commissioning Camera (ComCam) observed this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth :cite:`RTN-011`.
+The Vera Rubin Observatory's LSST Commissioning Camera (LSSTComCam) :cite:`ComCam` observed this patch of sky with over 1000 visits in total, 250 being in the :math:`i`-band alone, similar to 10-year depth :cite:`RTN-011`.
 This data was then processed several times through the Rubin pipelines enabling rapid improvements to the entire system.
 Unrecognized blends allow us to understand some of the inherent failure modes of object detection when objects are too close on the sky to be differentiated. 
-We use the :code:`/repo/dp1` repo and :code:`LSSTComCam/runs/DRP/DP1/v29_0_0/DM-50260` collection for ComCam data along with HST CANDELS data :cite:`HST1, HST2, HST3`. 
+We use the :code:`/repo/dp1` repo and :code:`LSSTComCam/runs/DRP/DP1/v29_0_0/DM-50260` collection for LSSTComCam data along with HST CANDELS data :cite:`HST1, HST2, HST3`. 
 
-The DP1 catalog :cite:`RTN-095good` includes a :code:`deblending` algorithm which means with accurate detection it is able to parse isolated and "recognized blends."
+The DP1 Object catalog :cite:`ObjectTable, RTN-095good` includes a :code:`deblending` algorithm which means with accurate detection it is able to parse isolated and "recognized blends."
 Deblending produces "children" objects from a "parent object", both of which are in the catalog and needs to be pruned in order to remove duplicates. 
 We apply the general :code:`detect_isPrimary` flag which removes the parent objects (if child object exist) from the catalog along with removing any sky objects and that the object is from the inner part of both a tract and a patch. 
 We will use the terms "extended object" (defined by :code:`refExtendedness == 1`) and "observed galaxy" interchangibly.
 We place two cuts on the HST catalog, that the F814W magnitude be brighter than  tunable value which we call the space magnitude (:math:`m_s`) and that :code:`FLAG == 0` which removes only 318 objects.
 Details on the HST :code:`FLAG` parameter can be found `here <https://archive.stsci.edu/hlsps/candels/goods-s/catalogs/v1/hlsp_candels_hst_wfc3_goodss-tot-multiband_f160w_v1_readme.pdf>`_. 
 
-The overlap between the two catalogs can be seen in :numref:`overlap` and the magnitude distribution (:math:`i` for ComCam and F814W for HST) in :numref:`magdist`.
+The overlap between the two catalogs can be seen in :numref:`overlap` and the magnitude distribution (:math:`i` for LSSTComCam and F814W for HST) in :numref:`magdist`.
 
 .. _overlap:
 .. figure:: ./_static/hst_comcam_overlap.png
@@ -122,7 +122,7 @@ Unrecognized Blends
 
 Using the matching schemes detailed above we can label isolated objects (pure), recognized blends and unrecognized blends in the ground catalog.
 Unless otherwise specified, we set :code:`candidate_boost_factor = 2`, :math:`m_s = 26.5`, and :math:`m_\Delta = 2`.
-Due to setting :math:`m_\Delta = 2`, even though the ComCam :math:`i`-mag distribution peaks at 25, we are only able to confidently label blends up to :math:`m_g = 24.5` because the HST catalog is complete only up to :math:`m_{F814W} = 26.5` as shown in :numref:`magdist`.
+Due to setting :math:`m_\Delta = 2`, even though the LSSTComCam :math:`i`-mag distribution peaks at 25, we are only able to confidently label blends up to :math:`m_g = 24.5` because the HST catalog is complete only up to :math:`m_{F814W} = 26.5` as shown in :numref:`magdist`.
 When relevant, the simpler KDTree method will also be presented showing results using :code:`search_radius = candidate_boost_factor`.
 
 
@@ -149,7 +149,7 @@ Shape Parameters
 -----------------
 Accurate shape measurements is necessary for weak lensing studies and it is expected that unrecognized blends will impact any shape estimates.
 This exact relationship was studied in some of the first work on unrecognized blends in :cite:`Dawson_2015` focusing on Subaru data.
-We repeat that analysis on ComCam data and restrict to galaxies for this section.
+We repeat that analysis on LSSTComCam data and restrict to galaxies for this section.
 
 Using the second moments of extedned objects, :math:`Q_{ij}`, we combine into KSB :cite:`KSB` ellipticity components :math:`e_1` and :math:`e_2` defined as 
 
@@ -206,10 +206,10 @@ The relationship of unrecognized blends and local density are shown in :numref:`
 .. _unrecdensity:
 .. figure:: ./_static/unrec_blend_density.png
 
-        Fraction of unrecognized blend as a function of ComCam object density (blue) and HST object density (orange). 
+        Fraction of unrecognized blend as a function of LSSTComCam object density (blue) and HST object density (orange). 
 
-As expected, the fraction of unrecognized blends monotonically increases with HST density; however, rather unexpectedly, we see that the blending rate decreases with the ground based ComCam density.
-We conclude that the ComCam measured object density is not a good predictor of the incidence of blends.
+As expected, the fraction of unrecognized blends monotonically increases with HST density; however, rather unexpectedly, we see that the blending rate decreases with the ground based LSSTComCam density.
+We conclude that the LSSTComCam measured object density is not a good predictor of the incidence of blends.
 
 .. 
 
@@ -217,13 +217,15 @@ Conclusion
 ==========
 
 We have outlined a matching scheme that allows for robustly classifying objects as isolated, recognized blends and unrecognized blends.
-Using the ellipse matching method, we investigate the occurance of unrecognized blends in the ComCam ECDFS data and how it varies with several properties like *i*-mag and local density.
+Using the ellipse matching method, we investigate the occurance of unrecognized blends in the LSSTComCam ECDFS data and how it varies with several properties like *i*-mag and local density.
 Comparing to simulations like the Roman-Rubin simulation, we find similar rates of unrecognized blends versus *i*-magnitude when using purely spatial matching but not ellipse matching.
-In total, unrecognized blends in ComCam is at the expected levels and not suffering from any pipeline issues.
+In total, unrecognized blends in LSSTComCam is at the expected levels and not suffering from pipeline issues.
 
 
 Acknowledgements
 =====================
+AvdL is supported by the U.S. Department of Energy under award DE-SC0018053. AvdL and PA are supported by the U.S. Department of Energy under awards DE-SC0025309 and DE-SC0023387. PA was also supported in part by the Stony Brook Lourie Fellowship.
+
 This work is based on observations taken by the CANDELS Multi-Cycle Treasury Program with the NASA/ESA HST, which is operated by the Association of Universities for Research in Astronomy, Inc., under NASA contract NAS5-26555.
 
 
@@ -237,7 +239,7 @@ Appendix
 .. _magdist:
 .. figure:: ./_static/hst_comcam_magdist.png
 
-        Log scale histogram of i-magnitude distribution for ComCam and F814W-magnitude for HST. The dashed lines are the approximate completeness limits of 25.4 and 26.5 respectively.
+        Log scale histogram of i-magnitude distribution for LSSTComCam and F814W-magnitude for HST. The dashed lines are the approximate completeness limits of 25.4 and 26.5 respectively.
 
 .. 
         Citations
