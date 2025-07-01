@@ -8,6 +8,7 @@ date_created = 2024-05-22T20:55:01Z
 organization.name = "Vera C. Rubin Observatory"
 organization.ror = "https://ror.org/048g3cy84"
 license.id = "CC-BY-4.0"
+doi = "https://doi.org/10.71929/rubin/2570850"
 
 [technote.status]
 state = "stable"

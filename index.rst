@@ -8,6 +8,7 @@ Unrecognized Blends in LSSTComCam Data Preview 1 ECDFS
    We can identify such objects by using higher resolution imaging from a space based telescope that will not be affected by ground based seeing and then label detected objects as isolated, recognized blends, or unrecognized blends.
    We find that for objects with 23 < *i* < 24.5, 18\% of objects are unrecognized blends. 
 
+DOI: https://doi.org/10.71929/rubin/2570850
 
 Data
 ===============
